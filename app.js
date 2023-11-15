@@ -17,35 +17,44 @@ function setItems(items) {
 }
 
 function addItem() {
-    items.unshift({
-      description: "",
-      completed: false
-    });
-  
-    setItems(items);
-    refreshList();
+  items.unshift({
+    description: "",
+    completed: false,
+  });
+
+  setItems(items);
+  refreshList();
+}
+
+function updateItem(item, key, value) {
+  item[key] = value;
+  setItems(items);
+  refreshList();
+}
+
+function refreshList() {
+  ItemsContainer.innerHTML = "";
+
+  for (const item of items) {
+    const itemElement = ItemTemplate.content.cloneNode(true);
+    const descriptionInput = itemElement.querySelector(".item-description");
+    const completedInput = itemElement.querySelector(".item-completed");
+
+    descriptionInput.value = item.description;
+    completedInput.checked = item.completed;
+
+    descriptionInput.addEventListener("change", () => {
+        updateItem(item, "description", descriptionInput.value)
+    })
+    completedInput.addEventListener("change", () => {
+        updateItem(item, "completed", completedInput.checked)
+    })
+    ItemsContainer.append(itemElement);
   }
-  
-  
-  
-  function refreshList() {
-    ItemsContainer.innerHTML = "";
-  
-    for (const item of items) {
-      const itemElement = ItemTemplate.content.cloneNode(true);
-      const descriptionInput = itemElement.querySelector(".item-description");
-      const completedInput = itemElement.querySelector(".item-completed");
-  
-      descriptionInput.value = item.description;
-      completedInput.checked = item.completed;
-  
-      ItemsContainer.append(itemElement);
-    }
-  }
-  
-  
-  
-  addButton.addEventListener("click", () => {
-      addItem()
-  })
-  
+}
+
+addButton.addEventListener("click", () => {
+  addItem();
+});
+
+refreshList()
